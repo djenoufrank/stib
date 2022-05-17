@@ -58,7 +58,6 @@ public class MainViewController implements Initializable {
 
     @FXML
     private TextField favoryTextField;
-    
 
     @FXML
     private Button addFavory;
@@ -67,86 +66,76 @@ public class MainViewController implements Initializable {
     private Button seeFavory;
     @FXML
     private Label numberOfStations;
-private boolean langue=false;
-private MenuItem nlStationsButton;
-private MenuItem frStationsButton;
-private Presenter presenter;
+    private boolean langue = false;
+    private MenuItem nlStationsButton;
+    private MenuItem frStationsButton;
+    private Presenter presenter;
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-
     public MainViewController() {
     }
-
-//    public MainViewController(String seachableOrigin, String seachableDestination) {
-//        this.seachableOrigin.setValue(seachableOrigin);
-//        this.seachableDestination.setValue(seachableDestination);
-//    }
 
     private final ObservableList<String> seachableOriginGet
             = FXCollections.observableArrayList();
     private final ObservableList<String> seachableDestinationGet
             = FXCollections.observableArrayList();
 
-       @Override
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         stationsTable = new TableColumn<>("STATIONS");
         linesTable = new TableColumn<>("LINES");
         table.getColumns().setAll(stationsTable, linesTable);
         stationsTable.setCellValueFactory(new PropertyValueFactory<>("station"));
-        linesTable.setCellValueFactory(new PropertyValueFactory<>("line"));  
+        linesTable.setCellValueFactory(new PropertyValueFactory<>("line"));
     }
 
     public void initialize(List<StationsDto> stations) {
         seachableOrigin.getItems().clear();
-                seachableDestination.getItems().clear();
-                seachableOriginGet.clear();
+        seachableDestination.getItems().clear();
+        seachableOriginGet.clear();
         seachableDestinationGet.clear();
-   stations.stream().map((station) -> {
-               seachableOriginGet.add(station.getName());
-                return station;
-            }).forEachOrdered((station) -> {
-                seachableDestinationGet.add(station.getName());
-            });
-  
-            seachableOrigin.setItems(seachableOriginGet);
-            seachableDestination.setItems(seachableDestinationGet);
-    }
-    
-    public void getNumberOfStations() {
-       this.numberOfStations.setText("Number of stations "+table.getItems().size());
+        stations.stream().map((station) -> {
+            seachableOriginGet.add(station.getName());
+            return station;
+        }).forEachOrdered((station) -> {
+            seachableDestinationGet.add(station.getName());
+        });
+
+        seachableOrigin.setItems(seachableOriginGet);
+        seachableDestination.setItems(seachableDestinationGet);
     }
 
+    public void getNumberOfStations() {
+        this.numberOfStations.setText("Number of stations " + table.getItems().size());
+    }
 
     /**
      * button for research
      *
      */
-    public void addHandlerButton() {           
+    public void addHandlerButton() {
         searchButton.setOnAction((ActionEvent t) -> {
-            presenter.search(seachableOrigin.getValue(),seachableDestination.getValue());
+            presenter.search(seachableOrigin.getValue(), seachableDestination.getValue());
             getNumberOfStations();
         });
     }
-   
-   public void addFavoryHandle() {
-        
+
+    public void addFavoryHandle() {
         addFavory.setOnAction((ActionEvent t) -> {
-            
             try {
-                presenter.addFavory(favoryTextField.getText(),seachableOrigin.getValue(),seachableDestination.getValue());
+                presenter.addFavory(favoryTextField.getText(), seachableOrigin.getValue(), seachableDestination.getValue());
             } catch (RepositoryException ex) {
                 Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         });
     }
-    
 
     /**
      * sets table after research
@@ -154,14 +143,14 @@ private Presenter presenter;
      * @param tableResult given list of stations
      */
     public void setTable(List<PrintInformations> tableResult) {
-            this.table.getItems().clear();
+        this.table.getItems().clear();
         tableResult.forEach(result -> this.table.getItems().add(result));
-    }    
-    
- @FXML
+    }
+
+    @FXML
     void seeFavoryHandle(ActionEvent event) throws IOException {
-        Stage favoryPage=(Stage)((Node)event.getSource()).getScene().getWindow();
-FavoriteView fav=new FavoriteView();
+        Stage favoryPage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        FavoriteView fav = new FavoriteView();
         try {
             fav.start(favoryPage);
         } catch (Exception ex) {
@@ -169,37 +158,36 @@ FavoriteView fav=new FavoriteView();
         }
     }
 
-   public void nlStationsButton() {   
-    
-              langue=true;//eng
-            try {
-                presenter.changeLangue(langue);
-            } catch (RepositoryException ex) {
-                Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+    public void nlStationsButton() {
+        langue = true;//eng
+        try {
+            presenter.changeLangue(langue);
+        } catch (RepositoryException ex) {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-   if(table.getItems().size()>0){
-      searchButton.setOnAction((ActionEvent t) -> {
-            presenter.search(seachableOrigin.getValue(),seachableDestination.getValue());
-            getNumberOfStations();
-        });
-      }
+        if (table.getItems().size() > 0) {
+            searchButton.setOnAction((ActionEvent t) -> {
+                presenter.search(seachableOrigin.getValue(), seachableDestination.getValue());
+                getNumberOfStations();
+            });
+        }
     }
-   public void frStationsButton() {   
 
-              langue=false;//francais
-            try {
-                presenter.changeLangue(langue);
-                
-            } catch (RepositoryException ex) {
-                Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-if(table.getItems().size()>0){
-      searchButton.setOnAction((ActionEvent t) -> {
-            presenter.search(seachableOrigin.getValue(),seachableDestination.getValue());
-            getNumberOfStations();
-        });
-}
+    public void frStationsButton() {
+
+        langue = false;//francais
+        try {
+            presenter.changeLangue(langue);
+
+        } catch (RepositoryException ex) {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (table.getItems().size() > 0) {
+            searchButton.setOnAction((ActionEvent t) -> {
+                presenter.search(seachableOrigin.getValue(), seachableDestination.getValue());
+                getNumberOfStations();
+            });
+        }
     }
 
 }

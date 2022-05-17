@@ -20,7 +20,7 @@ public class FavoryRepository implements Repository<String, FavoryDto>{
        /**
      * constructor of favory repository
      *
-     * @throws exception.RepositoryException
+     * @throws atl.StibRide.exception.RepositoryException
      */
     public FavoryRepository() throws RepositoryException {
         dao=FavoryDao.getInstance();

@@ -25,7 +25,7 @@ public class MainApp extends Application {
         stage.setTitle("Stib Ride");
         stage.setScene(scene);
         stage.show();
-
+        
         Model model = new Model();
         MainViewController view = root.getController();
         Presenter presenter = new Presenter(model, view);

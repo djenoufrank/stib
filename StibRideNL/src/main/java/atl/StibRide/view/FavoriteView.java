@@ -7,12 +7,8 @@ package atl.StibRide.view;
 
 import atl.StibRide.model.Model;
 import atl.StibRide.presenter.FavoryPresenter;
-import atl.StibRide.presenter.Presenter;
-import java.awt.Image;
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -27,7 +23,7 @@ public class FavoriteView extends Application {
          FXMLLoader root = new FXMLLoader(getClass()
                 .getResource("/fxml/favories.fxml"));
         Scene scene = new Scene(root.load(),900,700);
-        stage.setTitle("Stib Ride");
+        stage.setTitle("Stib Ride favories");
         stage.setScene(scene);
         stage.show();
         

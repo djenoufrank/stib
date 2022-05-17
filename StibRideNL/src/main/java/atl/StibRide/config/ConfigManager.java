@@ -21,7 +21,6 @@ public class ConfigManager {
 
     private final String url;
 
-
     /**
      * Loads the properties from this url.
      *

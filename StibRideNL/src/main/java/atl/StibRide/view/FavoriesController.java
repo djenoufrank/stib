@@ -8,13 +8,9 @@ import atl.StibRide.config.ConfigManager;
 import atl.StibRide.dto.FavoryDto;
 import atl.StibRide.dto.StationsDto;
 import atl.StibRide.exception.RepositoryException;
-import atl.StibRide.model.Model;
-import atl.StibRide.model.PrintInformations;
 import atl.StibRide.presenter.FavoryPresenter;
-import atl.StibRide.presenter.Presenter;
 import atl.StibRide.repository.FavoryRepository;
 import atl.StibRide.repository.StationsRepository;
-import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -25,11 +21,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,7 +32,7 @@ import org.controlsfx.control.SearchableComboBox;
 
 public class FavoriesController implements Initializable {
 
- @FXML
+    @FXML
     private TableView<FavoryDto> table;
 
     @FXML
@@ -68,17 +61,18 @@ public class FavoriesController implements Initializable {
     @FXML
     private Button backToStartPage;
 
-    FavoryDto favorySelected;    
-private FavoryPresenter presenter;
+    FavoryDto favorySelected;
+    private FavoryPresenter presenter;
 
     public void setPresenter(FavoryPresenter presenter) {
         this.presenter = presenter;
     }
+
     /**
      * default construtor of second view
      */
-    public FavoriesController() {     
-        
+    public FavoriesController() {
+
     }
     private final ObservableList<String> seachableFavoryGet
             = FXCollections.observableArrayList();
@@ -89,7 +83,6 @@ private FavoryPresenter presenter;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        favorySelected=null;
         name = new TableColumn<>("Name");
         source = new TableColumn<>("Sources");
         destination = new TableColumn<>("Destinations");
@@ -97,36 +90,20 @@ private FavoryPresenter presenter;
         name.setCellValueFactory(new PropertyValueFactory<>("key"));
         source.setCellValueFactory(new PropertyValueFactory<>("source"));
         destination.setCellValueFactory(new PropertyValueFactory<>("destination"));
- 
-        
+    }
 
-        try {
-            ConfigManager.getInstance().load();
-            FavoryRepository favory = new FavoryRepository();
-
-            List<FavoryDto> listFav = favory.getAll();
-            for (FavoryDto favoryDto : listFav) {
-seachableFavoryGet.add(favoryDto.getKey());
-                table.getItems().add(favoryDto);
-            }
-            StationsRepository demo=new StationsRepository();
-            List<StationsDto> stations = demo.getAll();
-            for (StationsDto station : stations) {
-                
-                seachableOriginGet.add(station.getName());
-                seachableDestinationGet.add(station.getName());
-            }
-                 seachableFavory.setItems(seachableFavoryGet);
-        seachableOrigin.setItems(seachableOriginGet);
-            seachableDestination.setItems(seachableDestinationGet);
-        } catch (RepositoryException ex) {
-            System.out.println("Erreur IO " + ex.getMessage());
-        } catch (IOException ex) {
-            Logger.getLogger(FavoriesController.class.getName())
-                    .log(Level.SEVERE, null, ex);
+    public void initialize(List<StationsDto> stations, List<FavoryDto> favories) {
+        for (FavoryDto favoryDto : favories) {
+            seachableFavoryGet.add(favoryDto.getKey());
+            table.getItems().add(favoryDto);
         }
-   
-
+        for (StationsDto station : stations) {
+            seachableOriginGet.add(station.getName());
+            seachableDestinationGet.add(station.getName());
+        }
+        seachableFavory.setItems(seachableFavoryGet);
+        seachableOrigin.setItems(seachableOriginGet);
+        seachableDestination.setItems(seachableDestinationGet);
     }
 
     /**
@@ -136,34 +113,32 @@ seachableFavoryGet.add(favoryDto.getKey());
      * @throws RepositoryException
      */
     void deleteHandle() {
-              delete.setOnAction((ActionEvent t) -> {
-                
+        delete.setOnAction((ActionEvent t) -> {
             presenter.delete(seachableFavory.getValue());
-       });
+        });
     }
-
-
 
     /**
      * butoon to go to start page
+     *
      * @param event click on startPage button
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @FXML
     void startPageHandle(ActionEvent event) throws RepositoryException, IOException {
-              Stage mainPage=(Stage)((Node)event.getSource()).getScene().getWindow();
-MainApp main=new MainApp();
+        Stage mainPage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        MainApp main = new MainApp();
         try {
             main.start(mainPage);
         } catch (Exception ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     /**
      * updates and restart table
      */
-    private void updateTable() {
+    private void updateTable(List<FavoryDto> favories) {
         table.getItems().clear();
         name = new TableColumn<>("Name");
         source = new TableColumn<>("Sources");
@@ -172,32 +147,18 @@ MainApp main=new MainApp();
         name.setCellValueFactory(new PropertyValueFactory<>("key"));
         source.setCellValueFactory(new PropertyValueFactory<>("source"));
         destination.setCellValueFactory(new PropertyValueFactory<>("destination"));
-       List<FavoryDto> listFav =null;
-               try {
-            ConfigManager.getInstance().load();
-            FavoryRepository favory = new FavoryRepository();
-            listFav = favory.getAll();
-        } catch (RepositoryException ex) {
-        } catch (IOException ex) {
-            Logger.getLogger(FavoriesController.class.getName())
-                    .log(Level.SEVERE, null, ex);
+        for (FavoryDto favoryDto : favories) {
+            table.getItems().add(favoryDto);
         }
-         for (FavoryDto favoryDto : listFav) {
-
-                table.getItems().add(favoryDto);
-            }
-         
     }
 
     public void modifyHandle() {
-           modify.setOnAction((ActionEvent t) -> {
-            presenter.modify(seachableFavory.getValue(),seachableOrigin.getValue(),seachableDestination.getValue());
+        modify.setOnAction((ActionEvent t) -> {
+            presenter.modify(seachableFavory.getValue(), seachableOrigin.getValue(), seachableDestination.getValue());
         });
-
     }
 
-
-    public void setTable() {
-updateTable(); 
+    public void setTable(List<FavoryDto> favories) {
+        updateTable(favories);
     }
 }

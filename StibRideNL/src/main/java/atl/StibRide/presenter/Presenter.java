@@ -15,15 +15,16 @@ import atl.StibRide.repository.FavoryRepository;
 import java.util.List;
 
 /**
- *class presenter 
+ * class presenter
+ *
  * @author g55301
  */
 public final class Presenter implements Observer {
 
     private final Model model;
-    private final  MainViewController view;
-    
-     /**
+    private final MainViewController view;
+
+    /**
      * constructor of presenter
      *
      * @param model given model
@@ -32,30 +33,30 @@ public final class Presenter implements Observer {
     public Presenter(Model model, MainViewController view) {
         this.model = model;
         this.view = view;
-        try {      
+        try {
             view.initialize(initCombo());
         } catch (RepositoryException ex) {
             Logger.getLogger(Presenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-   @Override
+
+    @Override
     public void update(Observable observable, Object argument) {
-       if (argument instanceof Research) {
+        if (argument instanceof Research) {
             Model research = (Model) observable;
-            view.setTable(research.getResearch().getTableResult());   
-        }else if(argument instanceof FavoryRepository){
+            view.setTable(research.getResearch().getTableResult());
+        } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("insertion");
-                alert.setContentText("everything good\n");
-                alert.showAndWait();
+            alert.setHeaderText("insertion");
+            alert.setContentText("everything good\n");
+            alert.showAndWait();
         }
     }
 
     /**
      * method to search lines and stations
      */
-    public void search(String origine,String destination) {
+    public void search(String origine, String destination) {
         if (origine == null
                 || destination == null
                 || origine.
@@ -65,23 +66,21 @@ public final class Presenter implements Observer {
             alert.setContentText("Something wrong with this entries .\n");
             alert.showAndWait();
         } else {
-            
-            this.model.compute(origine,destination);
-            
+
+            this.model.compute(origine, destination);
+
         }
     }
 
     public List<StationsDto> initCombo() throws RepositoryException {
-         return model.initStation();
+        return model.initStation();
     }
-     
-     public void addFavory(String favoryText,String origin,String destination) throws RepositoryException, IOException{
-        
-        if (!favoryText.isBlank() && origin!= null && destination!= null
+
+    public void addFavory(String favoryText, String origin, String destination) throws RepositoryException, IOException {
+        if (!favoryText.isBlank() && origin != null && destination != null
                 && !origin.equals(destination)) {
-            
-            model.insertion(favoryText,origin,destination);
-   
+            model.insertion(favoryText, origin, destination);
+
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("problem with Name of favory or source"
@@ -89,18 +88,16 @@ public final class Presenter implements Observer {
             alert.setContentText("Something wrong with this entries.");
             alert.showAndWait();
         }
-        
+
     }
 
     public void changeLangue(boolean langue) throws RepositoryException {
-       
         model.changeLangue(langue);
-              try {      
-                   System.out.println("presenter langue "+langue);
+        try {
             view.initialize(initCombo());
         } catch (RepositoryException ex) {
             Logger.getLogger(Presenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     
+
 }
